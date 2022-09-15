@@ -1,10 +1,35 @@
-import 'package:cybdom_podcast/global.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'dart:convert';
 
-class HomeScreen extends StatelessWidget {
+import 'package:cybdom_podcast/global.dart';
+import 'package:cybdom_podcast/model/podcast_model.dart';
+import 'package:cybdom_podcast/screens/player.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Future<List<PodcastModel>>? _fetchPodcastFuture;
+  @override
+  void initState() {
+    _fetchPodcastFuture = fetchPodcasts();
+    super.initState();
+  }
+
+  Future<List<PodcastModel>> fetchPodcasts() async {
+    final req =
+        await http.get(Uri.parse("$serverUrl/api/podcasts?populate=%2A"));
+    final result = jsonDecode(req.body)['data'].cast<Map<String, dynamic>>();
+    final List<PodcastModel> podcastList = result
+        .map<PodcastModel>((json) => PodcastModel.fromJson(json))
+        .toList();
+    return podcastList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +86,9 @@ class HomeScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         padding: EdgeInsets.zero,
                         backgroundColor: MyColors.greyish),
-                    onPressed: () {},
+                    onPressed: () {
+                      fetchPodcasts();
+                    },
                     child: const Icon(
                       Icons.notifications_outlined,
                       color: Colors.black54,
@@ -215,74 +242,100 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12.0),
-            ListView.builder(
-              itemCount: 5,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, i) => Container(
-                margin: const EdgeInsets.only(bottom: 14.0),
-                padding: const EdgeInsets.all(12),
-                height: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  border: Border.all(color: Colors.black12),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          "https://cybdom.tech/wp-content/uploads/2021/02/1-768x432.jpg",
-                          fit: BoxFit.cover,
-                          height: double.infinity,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      flex: 4,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "EP 19: Making Your Design Out of The Box",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            "Cybdom Tech",
-                            style: Theme.of(context).textTheme.caption,
-                          ),
-                          const SizedBox(
-                            height: 8.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: MyColors.lightBlue,
-                        shape: const CircleBorder(),
-                      ),
-                      onPressed: () {},
-                      child: const Icon(
-                        Icons.play_arrow,
-                        color: MyColors.darkBlue,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            )
+            FutureBuilder<List<PodcastModel>>(
+              future: _fetchPodcastFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('An error has occurred!'),
+                  );
+                } else if (snapshot.hasData) {
+                  return _podcastListView(snapshot.data!);
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  _podcastListView(List<PodcastModel> _podcastList) {
+    return ListView.builder(
+      itemCount: _podcastList.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, i) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 14.0),
+          padding: const EdgeInsets.all(12),
+          height: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.0),
+            border: Border.all(color: Colors.black12),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    "$serverUrl${_podcastList[i].imageUrl}",
+                    fit: BoxFit.cover,
+                    height: double.infinity,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              Expanded(
+                flex: 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${_podcastList[i].title}",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      "${_podcastList[i].author}",
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: MyColors.lightBlue,
+                  shape: const CircleBorder(),
+                ),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (builder) =>
+                        PlayerScreen(podcastDetails: _podcastList[i]),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: MyColors.darkBlue,
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -20,6 +20,7 @@ class IntroScreen extends StatelessWidget {
                     height: 50,
                     width: 50,
                   ),
+                  const SizedBox(width: 4),
                   Text(
                     "CybdomCast",
                     style: Theme.of(context).textTheme.titleMedium,
@@ -46,41 +47,45 @@ class IntroScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(
-                width: double.infinity,
-                height: 60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24.0),
-                  color: Colors.blue.shade900,
-                ),
-                child: Stack(
-                  children: [
-                    Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-                      width: 50,
-                      height: double.infinity,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
+              GestureDetector(
+                onTap: () =>
+                    Navigator.of(context).pushReplacementNamed('/home'),
+                child: Container(
+                  width: double.infinity,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24.0),
+                    color: Colors.blue.shade900,
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 4.0, vertical: 2.0),
+                        width: 50,
+                        height: double.infinity,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.blue.shade900,
+                        ),
                       ),
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.blue.shade900,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Start listening",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(color: Colors.white),
-                      ),
-                    )
-                  ],
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Start listening",
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(color: Colors.white),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],

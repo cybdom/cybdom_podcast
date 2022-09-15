@@ -1,9 +1,40 @@
+import 'package:cybdom_podcast/model/podcast_model.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 import '../global.dart';
 
-class PlayerScreen extends StatelessWidget {
-  const PlayerScreen({Key? key}) : super(key: key);
+class PlayerScreen extends StatefulWidget {
+  final PodcastModel podcastDetails;
+  const PlayerScreen({Key? key, required this.podcastDetails})
+      : super(key: key);
+
+  @override
+  State<PlayerScreen> createState() => _PlayerScreenState();
+}
+
+class _PlayerScreenState extends State<PlayerScreen> {
+  bool _isPlaying = false;
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+  @override
+  void initState() {
+    _controller = VideoPlayerController.network(
+      'https://stream.mux.com/${widget.podcastDetails.playbackId}.m3u8',
+    );
+
+    _initializeVideoPlayerFuture = _controller.initialize();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Ensure disposing of the VideoPlayerController to free up resources.
+    _controller.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +56,7 @@ class PlayerScreen extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         backgroundColor: MyColors.greyish,
                       ),
-                      onPressed: () {},
+                      onPressed: () => Navigator.of(context).pop(),
                       child: const Icon(
                         Icons.chevron_left,
                         color: Colors.black54,
@@ -56,17 +87,30 @@ class PlayerScreen extends StatelessWidget {
 
               //  New Section
               const SizedBox(height: 24.0),
-              Image.network(
-                  "https://cybdom.tech/wp-content/uploads/2021/02/1-768x432.jpg"),
+              FutureBuilder(
+                future: _initializeVideoPlayerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
 
               Column(
                 children: [
                   Text(
-                    "EP 19: Making Your Design Out of The Box",
+                    "${widget.podcastDetails.title}",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Text(
-                    "Cybdom Tech",
+                    "${widget.podcastDetails.author}",
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   const SizedBox(height: 8.0),
@@ -133,15 +177,24 @@ class PlayerScreen extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (!_isPlaying) {
+                        _controller.play();
+                      } else {
+                        _controller.pause();
+                      }
+                      setState(() {
+                        _isPlaying = !_isPlaying;
+                      });
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: MyColors.darkBlue,
                       shape: const CircleBorder(),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(12.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
                       child: Icon(
-                        Icons.play_arrow,
+                        _isPlaying ? Icons.pause : Icons.play_arrow,
                       ),
                     ),
                   ),

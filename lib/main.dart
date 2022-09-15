@@ -20,7 +20,10 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.latoTextTheme(),
         primarySwatch: Colors.blue,
       ),
-      home: const PlayerScreen(),
+      routes: {
+        '/': (context) => const IntroScreen(),
+        '/home': (context) => const HomeScreen(),
+      },
     );
   }
 }
