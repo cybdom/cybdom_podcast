@@ -111,7 +111,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ),
                   Text(
                     "${widget.podcastDetails.author}",
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8.0),
                   Row(
@@ -147,9 +147,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     value: .3,
                   ),
                   const SizedBox(height: 8.0),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
                         "03:23",
                       ),

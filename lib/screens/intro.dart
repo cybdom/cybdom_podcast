@@ -16,7 +16,7 @@ class IntroScreen extends StatelessWidget {
               Row(
                 children: [
                   Image.network(
-                    "https://cybdom.tech/wp-content/uploads/2020/04/cropped-Copie-de-cybdom-logo-4.png",
+                    "https://fr.gravatar.com/userimage/115885151/86a2d43856d74994c3b1b4874cb9561b.jpeg?size=256",
                     height: 50,
                     width: 50,
                   ),
@@ -34,7 +34,7 @@ class IntroScreen extends StatelessWidget {
                     "Listen to Various Great Topics of Podcast",
                     style: Theme.of(context)
                         .textTheme
-                        .headline3!
+                        .displaySmall!
                         .copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 12),
@@ -42,7 +42,7 @@ class IntroScreen extends StatelessWidget {
                     "Listen to your favorite podcast episodes, donwload and listen offline. Anytime, anywhere with CybdomCast",
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle1!
+                        .titleMedium!
                         .copyWith(color: Colors.black54),
                   ),
                 ],

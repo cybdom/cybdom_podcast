@@ -1,6 +1,5 @@
 import 'package:cybdom_podcast/screens/home.dart';
 import 'package:cybdom_podcast/screens/intro.dart';
-import 'package:cybdom_podcast/screens/player.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

@@ -6,4 +6,4 @@ class MyColors {
       lightBlue = Color(0xffb1bff4);
 }
 
-final String serverUrl = "http://192.168.1.103:1337";
+const String serverUrl = "http://192.168.1.102:1337";

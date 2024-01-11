@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
-                        "https://cybdom.tech/wp-content/uploads/2021/02/1-768x432.jpg",
+                        "https://fr.gravatar.com/userimage/115885151/86a2d43856d74994c3b1b4874cb9561b.jpeg?size=256",
                         fit: BoxFit.cover,
                         height: double.infinity,
                       ),
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 4.0),
                         Text(
                           "Cybdom Tech",
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                         const SizedBox(
                           height: 8.0,
@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Image.network(
-                              "https://cybdom.tech/wp-content/uploads/2020/04/wordpress-blog-app-in-flutter-768x432.jpg"),
+                              "https://fr.gravatar.com/userimage/115885151/86a2d43856d74994c3b1b4874cb9561b.jpeg?size=256"),
                         ),
                       ),
                     ),
@@ -264,9 +264,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _podcastListView(List<PodcastModel> _podcastList) {
+  _podcastListView(List<PodcastModel> podcastList) {
     return ListView.builder(
-      itemCount: _podcastList.length,
+      itemCount: podcastList.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, i) {
@@ -285,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    "$serverUrl${_podcastList[i].imageUrl}",
+                    "$serverUrl${podcastList[i].imageUrl}",
                     fit: BoxFit.cover,
                     height: double.infinity,
                   ),
@@ -299,13 +299,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${_podcastList[i].title}",
+                      "${podcastList[i].title}",
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      "${_podcastList[i].author}",
-                      style: Theme.of(context).textTheme.caption,
+                      "${podcastList[i].author}",
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(
                       height: 8.0,
@@ -324,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (builder) =>
-                        PlayerScreen(podcastDetails: _podcastList[i]),
+                        PlayerScreen(podcastDetails: podcastList[i]),
                   ),
                 ),
                 child: const Icon(
